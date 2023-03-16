@@ -1,6 +1,6 @@
 <template>
   <div
-    draggable
+    draggable="true"
     @dragstart.self="onDrag"
     @dragover.prevent
     @dragenter.prevent

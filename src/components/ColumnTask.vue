@@ -11,12 +11,12 @@
       }"
       @click.native="goToTask(task)"
     >
-      <span class="w-full flex-no-shrink font-bold">
+      <span class="w-full shrink-0 font-bold">
         {{ task.name }}
       </span>
       <p
         v-if="task.description"
-        class="w-full flex-no-shrink mt-1 text-sm"
+        class="w-full shrink-0 mt-1 text-sm"
       >
         {{ task.description }}
       </p>
