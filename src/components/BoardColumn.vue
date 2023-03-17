@@ -1,6 +1,6 @@
 <template>
   <AppDrop
-    @drop="moveTaskOrColumn"
+    @drop="moveColumn"
   >
     <AppDrag
       class="column"
@@ -38,7 +38,6 @@
 import ColumnTask from './ColumnTask.vue'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
-import movingTasksAndColumnsMixin from '../mixins/movingTasksAndColumnsMixin.js'
 
 export default {
   components: {
@@ -46,14 +45,26 @@ export default {
     AppDrag,
     AppDrop
   },
-  mixins: [movingTasksAndColumnsMixin],
+  props: {
+    board: {
+      type: Object,
+      required: true
+    },
+    column: {
+      type: Object,
+      required: true
+    },
+    columnIndex: {
+      type: Number,
+      required: true
+    }
+  },
   methods: {
-    pickupColumn (e, fromColumnIndex) {
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.dropEffect = 'move'
-
-      e.dataTransfer.setData('from-column-index', fromColumnIndex)
-      e.dataTransfer.setData('type', 'column')
+    moveColumn ({ fromColumnIndex }) {
+      this.$store.commit('MOVE_COLUMN', {
+        fromColumnIndex,
+        toColumnIndex: this.columnIndex
+      })
     },
     createTask (e, tasks) {
       this.$store.commit('CREATE_TASK', {
