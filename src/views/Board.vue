@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import BoardColumn from '../components/BoardColumn.vue'
 
 export default {
@@ -41,9 +42,7 @@ export default {
     }
   },
   computed: {
-    board () {
-      return this.$store.state.board
-    },
+    ...mapState(['board']),
     isTaskOpen () {
       return this.$route.name === 'task'
     }
