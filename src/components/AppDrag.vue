@@ -13,7 +13,7 @@
 export default {
   props: {
     transferData: {
-      type: Object,
+      type: String,
       required: true
     }
   },

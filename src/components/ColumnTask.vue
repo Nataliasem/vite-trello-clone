@@ -1,6 +1,6 @@
 <template>
   <AppDrop
-    @drop="moveTask"
+    @drop="moveTaskOrColumn"
   >
     <AppDrag
       class="task"
@@ -53,6 +53,15 @@ export default {
     }
   },
   methods: {
+    moveTaskOrColumn (transferData) {
+      if(transferData.type === 'task') {
+        this.moveTask(transferData)
+      }
+
+      if(transferData.type === 'column') {
+        this.moveColumn(transferData)
+      }
+    },
     moveTask ({ fromColumnIndex, fromTaskIndex }) {
       const fromTasks = this.board.columns[fromColumnIndex].tasks
 
@@ -61,6 +70,12 @@ export default {
         fromTaskIndex,
         toTasks: this.column.tasks,
         toTaskIndex: this.taskIndex
+      })
+    },
+    moveColumn ({ fromColumnIndex }) {
+      this.$store.commit('MOVE_COLUMN', {
+        fromColumnIndex,
+        toColumnIndex: this.columnIndex
       })
     },
     goToTask (task) {
