@@ -68,7 +68,7 @@ export default {
 
 <style lang="css">
 .column {
-  @apply p-2 mr-4 text-left shadow rounded;
+  @apply bg-gray-200 p-2 mr-4 text-left shadow rounded;
   min-width: 350px;
 }
 </style>

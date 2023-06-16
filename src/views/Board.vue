@@ -1,9 +1,9 @@
 <template>
   <div class="board">
-    <div class="flex flex-row items-start">
+    <div class="flex items-start space-x-2 p-2">
       <BoardColumn
         v-for="(column, $columnIndex) of board.columns"
-        :key="$columnIndex"
+        :key="column.name"
         :column="column"
         :columnIndex="$columnIndex"
         :board="board"
@@ -64,11 +64,15 @@ export default {
 
 <style lang="css">
 .board {
-  @apply p-4 h-full overflow-auto;
+  @apply bg-blue-900 p-4 h-full overflow-auto;
 }
 
 .task-bg {
   @apply absolute;
   background: rgba(0,0,0,0.5);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 </style>
