@@ -38,7 +38,6 @@
 import ColumnTask from './ColumnTask.vue'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
-import movingTasksAndColumnsMixin from '../mixins/movingTasksAndColumnsMixin.js'
 
 export default {
   components: {
@@ -46,14 +45,45 @@ export default {
     AppDrag,
     AppDrop
   },
-  mixins: [movingTasksAndColumnsMixin],
+  props: {
+    board: {
+      type: Object,
+      required: true
+    },
+    column: {
+      type: Object,
+      required: true
+    },
+    columnIndex: {
+      type: Number,
+      required: true
+    }
+  },
   methods: {
-    pickupColumn (e, fromColumnIndex) {
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.dropEffect = 'move'
+    moveTaskOrColumn (transferData) {
+      if(transferData.type === 'task') {
+        this.moveTask(transferData)
+      }
 
-      e.dataTransfer.setData('from-column-index', fromColumnIndex)
-      e.dataTransfer.setData('type', 'column')
+      if(transferData.type === 'column') {
+        this.moveColumn(transferData)
+      }
+    },
+    moveTask ({ fromColumnIndex, fromTaskIndex }) {
+      const fromTasks = this.board.columns[fromColumnIndex].tasks
+
+      this.$store.commit('MOVE_TASK', {
+        fromTasks,
+        fromTaskIndex,
+        toTasks: this.column.tasks,
+        toTaskIndex: this.taskIndex
+      })
+    },
+    moveColumn ({ fromColumnIndex }) {
+      this.$store.commit('MOVE_COLUMN', {
+        fromColumnIndex,
+        toColumnIndex: this.columnIndex
+      })
     },
     createTask (e, tasks) {
       this.$store.commit('CREATE_TASK', {
