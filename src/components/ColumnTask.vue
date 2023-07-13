@@ -1,15 +1,12 @@
 <template>
-  <AppDrop
-    @drop="moveTaskOrColumn"
-  >
+  <AppDrop @drop="move">
     <AppDrag
       class="task"
       :transferData="{
         type: 'task',
-        fromColumnIndex: columnIndex,
-        fromTaskIndex: taskIndex
+        fromTaskId: task.id
       }"
-      @click.native="goToTask(task)"
+      @click.native="goToTask"
     >
       <span class="w-full shrink-0 font-bold">
         {{ task.name }}
@@ -24,64 +21,29 @@
   </AppDrop>
 </template>
 
-<script>
+<script setup>
+import { useRouter } from 'vue-router'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
 
-export default {
-  components: { AppDrag, AppDrop },
-  props: {
-    board: {
-      type: Object,
-      required: true
-    },
-    column: {
-      type: Object,
-      required: true
-    },
-    task: {
-      type: Object,
-      required: true
-    },
-    taskIndex: {
-      type: Number,
-      required: true
-    },
-    columnIndex: {
-      type: Number,
-      required: true
-    }
-  },
-  methods: {
-    moveTaskOrColumn (transferData) {
-      if(transferData.type === 'task') {
-        this.moveTask(transferData)
-      }
+const props = defineProps({
+  task: Object
+})
 
-      if(transferData.type === 'column') {
-        this.moveColumn(transferData)
-      }
-    },
-    moveTask ({ fromColumnIndex, fromTaskIndex }) {
-      const fromTasks = this.board.columns[fromColumnIndex].tasks
+const emit = defineEmits(['move'])
 
-      this.$store.commit('MOVE_TASK', {
-        fromTasks,
-        fromTaskIndex,
-        toTasks: this.column.tasks,
-        toTaskIndex: this.taskIndex
-      })
-    },
-    moveColumn ({ fromColumnIndex }) {
-      this.$store.commit('MOVE_COLUMN', {
-        fromColumnIndex,
-        toColumnIndex: this.columnIndex
-      })
-    },
-    goToTask (task) {
-      this.$router.push({ name: 'task', params: { id: task.id } })
+const router = useRouter()
+const goToTask = () => {
+  router.push({
+    name: 'task',
+    params: {
+      id: props.task.id
     }
-  }
+  })
+}
+
+const move = (transferData) => {
+  emit('move', transferData)
 }
 </script>
 

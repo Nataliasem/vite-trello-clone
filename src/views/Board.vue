@@ -2,11 +2,10 @@
   <div class="board">
     <div class="flex items-start space-x-2 p-2">
       <BoardColumn
-        v-for="(column, $columnIndex) of board.columns"
+        v-for="column of board.columns"
         :key="column.name"
         :column="column"
-        :columnIndex="$columnIndex"
-        :board="board"
+        @move="moveTaskOrColumn"
       />
 
       <div class="column flex">
@@ -30,35 +29,59 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
+<script setup>
+import { ref, computed } from 'vue'
 import BoardColumn from '../components/BoardColumn.vue'
+import defaultBoard from '../default-board.js'
+import { useRouter, useRoute } from 'vue-router'
 
-export default {
-  components: { BoardColumn },
-  data () {
-    return {
-      newColumnName: ''
-    }
-  },
-  computed: {
-    ...mapState(['board']),
-    isTaskOpen () {
-      return this.$route.name === 'task'
-    }
-  },
-  methods: {
-    close () {
-      this.$router.push({ name: 'board' })
-    },
-    createColumn () {
-      this.$store.commit('CREATE_COLUMN', {
-        name: this.newColumnName
-      })
+const router = useRouter()
+const route = useRoute()
+const isTaskOpen = computed(() => {
+  return route.name === 'task'
+})
+const close = () => {
+  router.push({name: 'board'})
+}
 
-      this.newColumnName = ''
-    }
+// const board = JSON.parse(localStorage.getItem('board')) || defaultBoard
+const board = defaultBoard
+const newColumnName = ref('')
+const createColumn = () => {
+  const name = newColumnName.value
+  board.columns.push({
+    name,
+    tasks: []
+  })
+  newColumnName.value = ''
+}
+
+const moveTaskOrColumn = (transferData) => {
+  debugger
+  if (transferData.type === 'task') {
+    moveTask(transferData)
   }
+
+  if (transferData.type === 'column') {
+    moveColumn(transferData)
+  }
+}
+
+const moveTask = ({fromColumnId, fromTaskId}) => {
+  const fromTasks = board.value.columns[fromColumnId].tasks
+
+  // this.$store.commit('MOVE_TASK', {
+  //   fromTasks,
+  //   fromTaskId,
+  //   toTasks: this.column.tasks,
+  //   toTaskId: this.taskIndex
+  // })
+}
+const moveColumn = ({fromColumnId}) => {
+  // this.$store.commit('MOVE_COLUMN', {
+  //   fromColumnId,
+  //   toColumnId: this.columnIndex
+  // })
 }
 </script>
 
@@ -69,7 +92,7 @@ export default {
 
 .task-bg {
   @apply absolute;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   top: 0;
   right: 0;
   bottom: 0;
