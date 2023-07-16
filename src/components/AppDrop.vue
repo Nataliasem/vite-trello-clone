@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  // TODO: [ emit ]
   methods: {
     onDrop (e) {
       // данные того, что приземлилось

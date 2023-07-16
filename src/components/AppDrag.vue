@@ -18,6 +18,7 @@ export default {
     }
   },
   methods: {
+    // TODO: [ emit ]
     onDrag (e) {
       e.dataTransfer.effectAllowed = 'move'
       e.dataTransfer.dropEffect = 'move'
