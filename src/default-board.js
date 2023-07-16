@@ -4,50 +4,55 @@ export default {
   name: 'workshop',
   columns: [
     {
-      id: '71b324f1-9293-4e12-a05c-2b045f50443c',
+      id: 'todo',
       name: 'todo',
       tasks: [
         {
           description: '',
-          name: 'first task',
+          name: 'first task todo',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          columnId: 'todo'
         },
         {
           description: '',
-          name: 'second task',
+          name: 'second task todo',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          columnId: 'todo'
         },
         {
           description: '',
-          name: 'and thrid',
+          name: 'and third todo',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          columnId: 'todo'
         }
       ]
     },
     {
-      id: '475dbece-4bc3-4e00-a8d8-17d90b640193',
+      id: 'in-progress',
       name: 'in-progress',
       tasks: [
         {
           description: '',
-          name: 'first task',
+          name: 'first task in-progress',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          columnId: 'in-progress'
         }
       ]
     },
     {
-      id: '1d3462e4-5c4f-43f5-b5a2-3080442f554e',
+      id: 'done',
       name: 'done',
       tasks: [
         {
           description: '',
-          name: 'first task',
+          name: 'first task done',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          columnId: 'done'
         }
       ]
     }
