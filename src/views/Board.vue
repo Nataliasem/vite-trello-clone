@@ -4,7 +4,7 @@
       <AppDrop
         v-for="column of board.columns"
         :key="column.name"
-        @drop="onColumnDrop($event, clonedeep(column))"
+        @drop="onDrop($event, clonedeep(column))"
       >
         <AppDrag
           class="column"
@@ -20,11 +20,14 @@
           <AppDrop
             v-for="task of column.tasks"
             :key="task.id"
-            @drop="onTaskDrop($event, clonedeep(column), clonedeep(task))"
+            @drop="onDrop($event, clonedeep(column))"
           >
             <AppDrag
               class="task"
-              :transferData="{ type: 'task', ...task }"
+              :transferData="{
+              type: 'task',
+               ...task
+            }"
             >
               <span class="w-full shrink-0 font-bold">
                 {{ task.name }}
@@ -93,41 +96,48 @@ const createColumn = () => {
   newColumnName.value = ''
 }
 
-const onColumnDrop = (fromColumn, toColumn) => {
-  if(fromColumn.type === 'column') {
-    const columnList = clonedeep(board.value.columns)
+const fromColumnToColumn = (fromColumn, toColumn) => {
+  const columnList = clonedeep(board.value.columns)
 
-    const fromColumnIndex = columnList.findIndex(item => item.id === fromColumn.id)
-    const toColumnIndex = columnList.findIndex(item => item.id === toColumn.id)
+  const fromColumnIndex = columnList.findIndex(item => item.id === fromColumn.id)
+  const toColumnIndex = columnList.findIndex(item => item.id === toColumn.id)
 
-    const columnToMove = columnList.splice(fromColumnIndex, 1)[0] // удалили перемещаемую из массива
-    columnList.splice(toColumnIndex, 0, columnToMove)
+  columnList.splice(fromColumnIndex, 1)
+  columnList.splice(toColumnIndex, 0, fromColumn)
 
-    board.value.columns = columnList
-  }
+  board.value.columns = columnList
 }
 
-const onTaskDrop = (fromTask, toColumn, toTask) => {
-  if(fromTask.type === 'task') {
-    const columnList = clonedeep(board.value.columns)
+const fromTaskToColumn = (fromTask, toColumn) => {
+  const columnList = clonedeep(board.value.columns)
 
-    const filteredColumns = columnList.map(column => {
-      // 1. убрать fromTask из списка задач fromColumn
-      if(column.id === fromTask.columnId) {
-        const filteredTasks = (column.tasks || []).filter(item => item.id !== fromTask.id)
-        column.tasks = clonedeep(filteredTasks)
+  const filteredColumns = columnList.map(column => {
+    column.tasks = column.tasks.filter(item => item.id !== fromTask.id)
 
-        return column
-      }
+    if(column.id === toColumn.id) {
+      // TODO: order of tasks
+      column.tasks.push(fromTask)
+    }
 
-      // 2. TODO: добавить fromTask в список задач toColumn на место toTask
-      return column
-    })
+    return column
+  })
 
-    board.value.columns = clonedeep(filteredColumns)
-  }
+  board.value.columns = clonedeep(filteredColumns)
 }
 
+const fromTaskToTask = (fromTask, toTask) => {
+  // TODO: move tasks inside and between columns
+}
+
+const onDrop = (fromColumnOrTask, toColumn) => {
+  if(fromColumnOrTask.type === 'task') {
+    fromTaskToColumn(fromColumnOrTask, toColumn)
+  }
+
+  if(fromColumnOrTask.type === 'column') {
+    fromColumnToColumn(fromColumnOrTask, toColumn)
+  }
+}
 
 </script>
 
