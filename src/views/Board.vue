@@ -1,47 +1,14 @@
 <template>
   <div class="board">
     <div class="flex items-start space-x-2 p-2">
-      <AppDrop
+      <BoardColumn
         v-for="column of board.columns"
         :key="column.name"
-        @drop="onDrop($event, clonedeep(column))"
+        :column="column"
+        @move-column="moveColumn"
       >
-        <AppDrag
-          class="column"
-          :transferData="{
-          type: 'column',
-            ...column
-          }"
-        >
-          <div class="flex items-center mb-2 font-bold">
-            {{ column.name }}
-          </div>
-
-          <AppDrop
-            v-for="task of column.tasks"
-            :key="task.id"
-            @drop="onDrop($event, clonedeep(column))"
-          >
-            <AppDrag
-              class="task"
-              :transferData="{
-              type: 'task',
-               ...task
-            }"
-            >
-              <span class="w-full shrink-0 font-bold">
-                {{ task.name }}
-              </span>
-              <p
-                v-if="task.description"
-                class="w-full shrink-0 mt-1 text-sm"
-              >
-                {{ task.description }}
-              </p>
-            </AppDrag>
-          </AppDrop>
-        </AppDrag>
-      </AppDrop>
+        <ColumnTasks :tasks="column.tasks" @move-task="moveTask" />
+      </BoardColumn>
 
       <div class="column flex">
         <input
@@ -66,13 +33,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import AppDrop from '../components/AppDrop.vue'
-import AppDrag from '../components/AppDrag.vue'
 import BoardColumn from '../components/BoardColumn.vue'
-import ColumnTask from '../components/ColumnTask.vue'
+import ColumnTasks from '../components/ColumnTasks.vue'
 import defaultBoard from '../default-board.js'
 import { useRouter, useRoute } from 'vue-router'
-import { uuid } from '../utils.js'
 import clonedeep from 'lodash.clonedeep'
 
 const router = useRouter()
@@ -96,47 +60,12 @@ const createColumn = () => {
   newColumnName.value = ''
 }
 
-const fromColumnToColumn = (fromColumn, toColumn) => {
-  const columnList = clonedeep(board.value.columns)
-
-  const fromColumnIndex = columnList.findIndex(item => item.id === fromColumn.id)
-  const toColumnIndex = columnList.findIndex(item => item.id === toColumn.id)
-
-  columnList.splice(fromColumnIndex, 1)
-  columnList.splice(toColumnIndex, 0, fromColumn)
-
-  board.value.columns = columnList
+const moveColumn = ({ fromColumn, toColumn }) => {
+  debugger
 }
 
-const fromTaskToColumn = (fromTask, toColumn) => {
-  const columnList = clonedeep(board.value.columns)
-
-  const filteredColumns = columnList.map(column => {
-    column.tasks = column.tasks.filter(item => item.id !== fromTask.id)
-
-    if(column.id === toColumn.id) {
-      // TODO: order of tasks
-      column.tasks.push(fromTask)
-    }
-
-    return column
-  })
-
-  board.value.columns = clonedeep(filteredColumns)
-}
-
-const fromTaskToTask = (fromTask, toTask) => {
-  // TODO: move tasks inside and between columns
-}
-
-const onDrop = (fromColumnOrTask, toColumn) => {
-  if(fromColumnOrTask.type === 'task') {
-    fromTaskToColumn(fromColumnOrTask, toColumn)
-  }
-
-  if(fromColumnOrTask.type === 'column') {
-    fromColumnToColumn(fromColumnOrTask, toColumn)
-  }
+const moveTask = ({ fromTask, toTask }) => {
+  debugger
 }
 
 </script>

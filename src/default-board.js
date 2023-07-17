@@ -6,53 +6,66 @@ export default {
     {
       id: 'todo',
       name: 'todo',
+      type: 'column',
       tasks: [
         {
+          type: 'task',
           description: '',
-          name: 'first task todo',
+          name: '1 todo',
           id: uuid(),
           userAssigned: null,
-          columnId: 'todo'
+          columnId: 'todo',
+          color: 'bg-red-200'
         },
         {
+          type: 'task',
           description: '',
-          name: 'second task todo',
+          name: '2 todo',
           id: uuid(),
           userAssigned: null,
-          columnId: 'todo'
+          columnId: 'todo',
+          color: 'bg-green-200'
         },
         {
+          type: 'task',
           description: '',
-          name: 'and third todo',
+          name: '3 todo',
           id: uuid(),
           userAssigned: null,
-          columnId: 'todo'
+          columnId: 'todo',
+          color: 'bg-blue-200'
         }
       ]
     },
     {
       id: 'in-progress',
       name: 'in-progress',
+      type: 'column',
       tasks: [
         {
+          type: 'task',
           description: '',
-          name: 'first task in-progress',
+          name: '1 in-progress',
           id: uuid(),
           userAssigned: null,
-          columnId: 'in-progress'
+          columnId: 'in-progress',
+          color: 'bg-purple-200'
         }
       ]
     },
     {
       id: 'done',
       name: 'done',
+      type: 'column',
       tasks: [
         {
+          type: 'task',
           description: '',
-          name: 'first task done',
+          name: '1 done',
           id: uuid(),
           userAssigned: null,
-          columnId: 'done'
+          columnId: 'done',
+          color: 'bg-sky-300'
         }
       ]
     }

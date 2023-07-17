@@ -1,22 +1,14 @@
 <template>
-  <AppDrop @drop="move">
+  <AppDrop @drop="move($event, clonedeep(column))">
     <AppDrag
       class="column"
-      :transferData="{
-        type: 'column',
-        fromColumnId: column.id
-      }"
+      :transferData="column"
     >
       <div class="flex items-center mb-2 font-bold">
         {{ column.name }}
       </div>
       <div class="list-reset">
-        <ColumnTask
-          v-for="(task) of column.tasks"
-          :key="task.id"
-          :task="task"
-          @move="move"
-        />
+        <slot />
 
         <input
           type="text"
@@ -31,29 +23,26 @@
 
 
 <script setup>
-import ColumnTask from './ColumnTask.vue'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
+import clonedeep from 'lodash.clonedeep'
 
 const props = defineProps({
   column: Object
 })
 
-const emit = defineEmits(['move'])
+const emit = defineEmits(['move-column', 'create-task'])
 
-const createTask = (eventData) => {
-  const data = eventData
-  debugger
-  // this.$store.commit('CREATE_TASK', {
-  //   tasks: props.column.tasks,
-  //   name: eventData.target.value
-  // })
+const move = (fromColumn, toColumn) => {
+  if(fromColumn.type === 'column')
+  emit('move-column', {
+    fromColumn,
+    toColumn
+  })
 }
 
-const move = (transferData) => {
-  transferData.fromColumnId = props.column.id
-
-  emit('move', transferData)
+const createTask = (task) => {
+  emit('create-task', task)
 }
 </script>
 
