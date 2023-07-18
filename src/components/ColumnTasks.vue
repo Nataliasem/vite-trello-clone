@@ -1,13 +1,13 @@
 <template>
   <AppDrop
-    v-for="task in localTasks"
+    v-for="task in tasks"
     @drop="move($event, clonedeep(task))"
   >
     <AppDrag
       class="task"
       :class="task.color"
       :transferData="task"
-      @click.native="showDetails"
+      @click.native="openTask(task)"
     >
       <span class="w-full shrink-0 font-bold">
         {{ task.name }}
@@ -20,13 +20,19 @@
       </p>
     </AppDrag>
   </AppDrop>
+
+  <TaskView
+    v-if="!!openedTask"
+    :task="openedTask"
+    @close="closeTask"
+  />
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import TaskView from '../components/TaskView.vue'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import clonedeep from 'lodash.clonedeep'
 
 const props = defineProps({
@@ -35,15 +41,18 @@ const props = defineProps({
 
 const emit = defineEmits(['move-task'])
 
-const router = useRouter()
-const showDetails = () => {}
+const openedTask = ref(null)
+const openTask = (task) => {
+  openedTask.value = task
+}
+const closeTask = () => {
+  openedTask.value = null
+}
 
-const localTasks = ref(clonedeep(props.tasks))
-
-const move = (fromTask, toTask) => {
-  if(fromTask.type === 'task') {
+const move = (task, toTask) => {
+  if(task.type === 'task') {
     emit('move-task', {
-      fromTask,
+      task,
       toTask
     })
   }

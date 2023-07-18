@@ -1,6 +1,10 @@
 <template>
-  <router-view />
+  <Board />
 </template>
+
+<script setup>
+import Board from '../src/views/Board.vue'
+</script>
 
 <style>
 body, html {
@@ -14,9 +18,5 @@ body, html {
   text-align: center;
   color: #2c3e50;
   height: 100%;
-}
-
-.container {
-  @apply mx-auto;
 }
 </style>

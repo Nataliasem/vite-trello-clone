@@ -13,16 +13,14 @@ export default {
           description: '',
           name: '1 todo',
           id: uuid(),
-          userAssigned: null,
           columnId: 'todo',
-          color: 'bg-red-200'
+          color: 'bg-green-200'
         },
         {
           type: 'task',
           description: '',
           name: '2 todo',
           id: uuid(),
-          userAssigned: null,
           columnId: 'todo',
           color: 'bg-green-200'
         },
@@ -31,9 +29,8 @@ export default {
           description: '',
           name: '3 todo',
           id: uuid(),
-          userAssigned: null,
           columnId: 'todo',
-          color: 'bg-blue-200'
+          color: 'bg-green-200'
         }
       ]
     },
@@ -47,7 +44,6 @@ export default {
           description: '',
           name: '1 in-progress',
           id: uuid(),
-          userAssigned: null,
           columnId: 'in-progress',
           color: 'bg-purple-200'
         }
@@ -63,7 +59,6 @@ export default {
           description: '',
           name: '1 done',
           id: uuid(),
-          userAssigned: null,
           columnId: 'done',
           color: 'bg-sky-300'
         }
