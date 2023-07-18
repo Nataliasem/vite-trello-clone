@@ -9,24 +9,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    transferData: {
-      type: Object,
-      required: true
-    }
-  },
-  methods: {
-    onDrag (e) {
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.dropEffect = 'move'
+<script setup>
+const props = defineProps({
+  transferData: Object
+})
 
-      e.dataTransfer.setData('payload', JSON.stringify(this.transferData))
-    }
-  }
+const onDrag = (e) => {
+  e.dataTransfer.effectAllowed = 'move'
+  e.dataTransfer.dropEffect = 'move'
+
+  e.dataTransfer.setData('payload', JSON.stringify(props.transferData))
 }
 </script>
-
-<style lang="css" scoped>
-</style>

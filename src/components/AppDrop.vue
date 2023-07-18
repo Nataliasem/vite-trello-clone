@@ -8,17 +8,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    onDrop (e) {
-      const transferData = JSON.parse(e.dataTransfer.getData('payload'))
+<script setup>
+const emit = defineEmits(['drop'])
 
-      this.$emit('drop', transferData)
-    }
-  }
+const onDrop = (e) => {
+  const transferData = JSON.parse(e.dataTransfer.getData('payload'))
+  emit('drop', transferData)
 }
 </script>
-
-<style lang="css" scoped>
-</style>

@@ -1,98 +1,75 @@
 <template>
-  <AppDrop
-    @drop="moveTaskOrColumn"
-  >
+  <AppDrop @drop="move($event, clonedeep(column))">
     <AppDrag
       class="column"
-      :transferData="{
-        type: 'column',
-        fromColumnIndex: columnIndex
-      }"
+      :transferData="column"
     >
       <div class="flex items-center mb-2 font-bold">
         {{ column.name }}
       </div>
       <div class="list-reset">
-        <ColumnTask
-          v-for="(task, $taskIndex) of column.tasks"
-          :key="$taskIndex"
-          :task="task"
-          :taskIndex="$taskIndex"
-          :column="column"
-          :columnIndex="columnIndex"
-          :board="board"
-        />
+        <slot/>
 
         <input
+          v-model="newTask"
           type="text"
           class="block p-2 w-full bg-transparent"
           placeholder="+ Enter new task"
-          @keyup.enter="createTask($event, column.tasks)"
+          @keyup.enter="createTask"
         />
       </div>
     </AppDrag>
   </AppDrop>
 </template>
 
-<script>
-import ColumnTask from './ColumnTask.vue'
+
+<script setup>
+import { ref } from 'vue'
 import AppDrag from './AppDrag.vue'
 import AppDrop from './AppDrop.vue'
+import clonedeep from 'lodash.clonedeep'
+import { uuid } from '../utils.js'
 
-export default {
-  components: {
-    ColumnTask,
-    AppDrag,
-    AppDrop
-  },
-  props: {
-    board: {
-      type: Object,
-      required: true
-    },
-    column: {
-      type: Object,
-      required: true
-    },
-    columnIndex: {
-      type: Number,
-      required: true
-    }
-  },
-  methods: {
-    moveTaskOrColumn (transferData) {
-      if(transferData.type === 'task') {
-        this.moveTask(transferData)
-      }
+const props = defineProps({
+  column: Object
+})
 
-      if(transferData.type === 'column') {
-        this.moveColumn(transferData)
-      }
-    },
-    moveTask ({ fromColumnIndex, fromTaskIndex }) {
-      const fromTasks = this.board.columns[fromColumnIndex].tasks
+const emit = defineEmits([ 'move-column', 'create-task', 'move-task-to-column' ])
 
-      this.$store.commit('MOVE_TASK', {
-        fromTasks,
-        fromTaskIndex,
-        toTasks: this.column.tasks,
-        toTaskIndex: this.taskIndex
-      })
-    },
-    moveColumn ({ fromColumnIndex }) {
-      this.$store.commit('MOVE_COLUMN', {
-        fromColumnIndex,
-        toColumnIndex: this.columnIndex
-      })
-    },
-    createTask (e, tasks) {
-      this.$store.commit('CREATE_TASK', {
-        tasks,
-        name: e.target.value
-      })
-      e.target.value = ''
-    }
+const move = (fromData, toData) => {
+  if (fromData.type === 'task') {
+    emit('move-task-to-column', {
+      task: fromData,
+      toColumn: toData
+    })
   }
+
+
+  if (fromData.type === 'column') {
+    emit('move-column', {
+      column: fromData,
+      toColumn: toData
+    })
+  }
+}
+
+const newTask = ref('')
+
+const createTask = () => {
+  if (!newTask.value) {
+    return
+  }
+
+  const payload = {
+    type: 'task',
+    description: '',
+    name: newTask.value,
+    id: uuid(),
+    columnId: props.column.id,
+    color: 'bg-red-200'
+  }
+
+  emit('create-task', payload)
 }
 </script>
 
